@@ -96,3 +96,24 @@ body {
   transform: rotateY(180deg);
   pointer-events: none;
 }
+.finish div {
+  height: 250px;
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  color: white;
+  font-weight: bold;
+  position: fixed;
+  left: 50%;
+  top: 20%;
+  transform: translateX(-50%);
+}
+.finish .success {
+background: #23a591;
+}
+.finish .loss {
+  background-color: #c52929;;
+}

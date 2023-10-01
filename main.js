@@ -1,3 +1,6 @@
+let triesElement = document.querySelector(".tries span");
+let timerElement = document.querySelector(".info-container .timer");
+
 document.querySelector(".control-buttons span").onclick = function () {
   let yourName = prompt("Whats your name?");
   if (yourName === null || yourName === "") {
@@ -6,8 +9,11 @@ document.querySelector(".control-buttons span").onclick = function () {
     document.querySelector(".name span").innerHTML = yourName;
   }
   document.querySelector(".control-buttons").remove();
+  countdown(90);
 }
 
+let countdownInterval;
+let success = 0;
 let duration = 1000;
 let blocksContainer = document.querySelector(".memory-game-blocks");
 let blocks = Array.from(blocksContainer.children);
@@ -39,7 +45,6 @@ function stopClicking() {
 }
 
 function checkMatchedBlocks(firstBlock, secondBlock) {
-  let triesElement = document.querySelector(".tries span");
   if (firstBlock.dataset.app === secondBlock.dataset.app) {
     firstBlock.classList.remove("is-flipped");
     secondBlock.classList.remove("is-flipped");
@@ -48,6 +53,11 @@ function checkMatchedBlocks(firstBlock, secondBlock) {
     secondBlock.classList.add("has-match");
 
     document.querySelector("#success").play();
+    success++;
+    if (success === blocks.length / 2) {
+      clearInterval(countdownInterval);
+      successfun();
+    }
   } else {
     triesElement.innerHTML = parseInt(triesElement.innerHTML) + 1;
     setTimeout(() => {
@@ -70,4 +80,38 @@ function shuffle(array) {
     array[random] = temp;
   }
   return array;
+}
+
+function successfun() {
+  let div = document.createElement("div");
+  div.className = "success";
+  div.innerHTML = `congratulations, you won after ${triesElement.innerHTML} wrong attempts`;
+  document.querySelector(".finish").append(div);
+  document.querySelector("#win").play();
+}
+
+function lossfun() {
+  blocksContainer.classList.add("no-clicking");
+  let div = document.createElement("div");
+  div.className = "loss";
+  div.innerHTML = `Game over`;
+  document.querySelector(".finish").append(div);
+  document.querySelector("#loss").play();
+}
+
+function countdown(duration) {
+    let minutes, seconds;
+    countdownInterval = setInterval(() => {
+      minutes = parseInt(duration / 60);
+      seconds = parseInt(duration % 60);
+
+      minutes = minutes < 10 ? `0${minutes}` : minutes;
+      seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+      timerElement.innerHTML = `${minutes}:${seconds}`;
+      if (--duration < 0) {
+        clearInterval(countdownInterval);
+        lossfun();
+      }
+    }, 1000);
 }
